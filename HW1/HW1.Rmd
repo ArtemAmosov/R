@@ -1,0 +1,60 @@
+---
+title: "HW1"
+author: "Amosov Artem"
+date: "04 04 2022"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(ggplot2)
+library(sp)
+```
+
+**Task**: find the area of a figure bounded by curves given by the equation:
+
+$$
+ y = 2|x| - \pi, x \in [-{pi\over2},{pi\over2}]
+$$
+$$
+ y = |sin(2x)|, x \in [-{pi\over 2},{pi\over 2}]
+$$
+
+```{r fig.align="center", echo = FALSE,fig.width = 14,fig.height=10}
+X <- seq(from=-pi/2, to=pi/2, length.out=100)
+Y <- 2*abs(X) - pi
+Y <- c(Y, abs(sin(2*X)))
+X <- c(X, X)
+df <- data.frame(X, Y)
+p <- qplot(X, Y, xlim = c(-2, 2), ylim = c(-4, 1))
+p <- p + geom_polygon(df, mapping = aes(X,Y), fill = 'red')
+```
+
+
+
+### Generation of random points
+```{r}
+coords <- function(){
+  x <- runif(1000, min = -2, max = 2)
+  y <- runif(1000, min = -4, max = 1)
+  df2 <- data.frame(x, y)
+  df2
+}
+points <- coords()
+p + geom_point(points, mapping = aes(x,y)) 
+
+```
+
+### Counting area
+```{r}
+inside <- sum(point.in.polygon(points$x, points$y, X, Y))
+inside
+area <- 20*(inside/(1000-inside))
+area
+```
+
