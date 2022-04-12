@@ -1,0 +1,90 @@
+---
+title: "HW2"
+author: "Amosov Artem"
+date: "05 04 2022"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+deck <- read.csv('deck.csv')
+deck <- rbind(deck, deck, deck, deck)
+head(deck)
+```
+```{r}
+shuffle_deck <- function(){
+   deck <- deck[sample(1:nrow(deck)), ]
+   rownames(deck)<- c(1:208)
+   deck
+}
+head(shuffle_deck())
+```
+```{r}
+start_game <- function() {
+  deck <<- shuffle_deck()
+  dealers <<- deck[1:2, ]
+  your <<- deck[3:4, ]
+  i <<- 5
+  cat('Dealers hand:\n', unlist(dealers[1, ]),'\n', unlist(dealers[2, ]))
+  cat('\nsum:', sum(dealers$value))
+  cat('\nYour hand:\n', unlist(your[1, ]),'\n', unlist(your[2, ]))
+  cat('\nsum:', sum(your$value))
+}
+```
+```{r}
+deal <- function(){
+ your[nrow(your) + 1,] <<- deck[i, ]
+ your
+ i <<- i+1
+ cat('\nDealers hand:\n', unlist(dealers[1, ]),'\n', unlist(dealers[2, ]))
+ cat('\nsum:', sum(dealers$value))
+ cat('\nYour hand:\n')
+ for (j in 1:nrow(your)){
+   cat(' ',unlist(your[j, ]),'\n')
+ }
+ cat('sum:', sum(your$value))
+}
+```
+
+```{r}
+stop_game <- function() {
+  if (sum(your$value) > 21){
+    cat('\nLOse')
+  } else {
+    if (sum(dealers$value > 21)){
+      cat('\nWIn')
+  } else {
+    if (sum(your$value)>sum(dealers$value)){
+      cat('\nWin')
+    } else {
+      cat('\nLose')
+    }
+  }}
+}
+```
+### Game1
+```{r}
+start_game()
+```
+```{r}
+deal()
+```
+```{r}
+stop_game()
+```
+### Game2
+```{r}
+start_game()
+```
+```{r}
+deal()
+```
+```{r}
+deal()
+```
+```{r}
+stop_game()
+```
