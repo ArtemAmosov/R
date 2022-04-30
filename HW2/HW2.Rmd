@@ -22,6 +22,7 @@ shuffle_deck <- function(){
 }
 head(shuffle_deck())
 ```
+
 ```{r}
 start_game <- function() {
   deck <<- shuffle_deck()
@@ -32,8 +33,11 @@ start_game <- function() {
   cat('\nsum:', sum(dealers$value))
   cat('\nYour hand:\n', unlist(your[1, ]),'\n', unlist(your[2, ]))
   cat('\nsum:', sum(your$value))
+  cat('\nchances:', sum(as.numeric(deck$value <= 21-sum(your$value)))/dim(deck)[1]*100)
+  cat('%')
 }
 ```
+
 ```{r}
 deal <- function(){
  your[nrow(your) + 1,] <<- deck[i, ]
@@ -46,7 +50,10 @@ deal <- function(){
    cat(' ',unlist(your[j, ]),'\n')
  }
  cat('sum:', sum(your$value))
+ cat('\nchances:', sum(as.numeric(deck$value <= 21-sum(your$value)))/dim(deck)[1])
+ cat('%')
 }
+
 ```
 
 ```{r}
@@ -82,9 +89,7 @@ start_game()
 ```{r}
 deal()
 ```
-```{r}
-deal()
-```
+
 ```{r}
 stop_game()
 ```
