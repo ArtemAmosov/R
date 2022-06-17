@@ -3,6 +3,7 @@ title: "HW1"
 author: "Amosov Artem"
 date: "04 04 2022"
 output:
+  pdf_document: default
   html_document:
     df_print: paged
 ---
@@ -26,13 +27,14 @@ $$
 $$
 
 ```{r fig.align="center", echo = FALSE,fig.width = 14,fig.height=10}
-X <- seq(from=-pi/2, to=pi/2, length.out=100)
-Y <- 2*abs(X) - pi
-Y <- c(Y, abs(sin(2*X)))
-X <- c(X, X)
-df <- data.frame(X, Y)
-p <- qplot(X, Y, xlim = c(-2, 2), ylim = c(-4, 1))
-p <- p + geom_polygon(df, mapping = aes(X,Y), fill = 'red')
+X <- seq(from=-pi/2, to=pi/2, by = 0.01)
+Y1 <- 2*abs(X) - pi
+Y2 <- abs(sin(2*X))
+df <- data.frame(X, Y1, Y2)
+
+ggplot(df, aes(X))+
+  geom_line(aes(X,Y1), color = 'red')+
+  geom_line(aes(X,Y2), color = 'red')
 ```
 
 
@@ -40,21 +42,25 @@ p <- p + geom_polygon(df, mapping = aes(X,Y), fill = 'red')
 ### Generation of random points
 ```{r}
 coords <- function(){
-  x <- runif(1000, min = -2, max = 2)
-  y <- runif(1000, min = -4, max = 1)
-  df2 <- data.frame(x, y)
+  x <- runif(10000, min = -pi/2, max = pi/2)
+  y <- runif(10000, min = -pi, max = 1)
+  Y1 <- abs(sin(2*x))
+  Y2 <- 2*abs(x) - pi
+  inside <- (y<Y1)&(y>Y2)
+  df2 <- data.frame(x, y,inside, Y1, Y2)
   df2
 }
 points <- coords()
-p + geom_point(points, mapping = aes(x,y)) 
-
+ggplot(points, aes(x))+
+  geom_point(aes(x,y, col = inside))+
+  geom_line(aes(x,Y1), color = 'black')+
+  geom_line(aes(x,Y2), color = 'black')
 ```
 
 ### Counting area
 ```{r}
-inside <- sum(point.in.polygon(points$x, points$y, X, Y))
-inside
-area <- 20*(inside/(1000-inside))
+inside <- nrow(points[points$inside == T,])
+area <- pi*(pi+1)*(inside/10000)
 area
 ```
 
